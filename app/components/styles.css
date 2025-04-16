@@ -1,0 +1,155 @@
+.markdown {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: inherit; /* Giúp dòng văn bản thoáng nhưng không quá xa */
+  color: #333;
+  max-width: auto;
+  width: 100%;
+  margin: auto;
+}
+
+/* Tiêu đề */
+.markdown h1, 
+.markdown h2, 
+.markdown h3, 
+.markdown h4, 
+.markdown h5, 
+.markdown h6 {
+  font-weight: bold;
+  margin-bottom: 0px;
+  color: #2c3e50;
+}
+
+.markdown h1 { font-size: 24px; }
+.markdown h2 { font-size: 22px; }
+.markdown h3 { font-size: 20px; }
+.markdown h4 { font-size: 18px; }
+.markdown h5 { font-size: 16px; margin-top: 12px; }
+.markdown h6 { font-size: 14px; }
+
+/* Định dạng đoạn văn */
+.markdown p {
+  margin-bottom: 0px;
+}
+
+/* Danh sách gạch đầu dòng */
+.markdown ul {
+  list-style-type: disc;
+  padding-left: 20px;
+  margin-left: 8px;
+}
+
+.markdown ul li {
+  list-style-type: circle;
+  margin-left: 8px;
+}
+.markdown ol ul ul li {
+  list-style-type: disclosure-closed;
+}
+
+.markdown ol ul ul ul li {
+  list-style-type: square;
+}
+
+/* Danh sách số */
+.markdown ol {
+  list-style-type: decimal;
+  padding-left: 22px;
+  margin-bottom: 6px;
+}
+
+.markdown ol li {
+  /* margin-bottom: -24px; */
+}
+
+/* Liên kết */ 
+.markdown a {
+  /* bold */
+  font-weight: bold;
+  color: #49A8FF !important;
+  text-decoration: none;
+}
+
+.markdown a:hover {
+  text-decoration: no;
+}
+
+/* Chia cách giữa các phần */
+.markdown hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 16px 0;
+}
+
+/* Code block */
+.markdown pre {
+  background: #f4f4f4;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.markdown code {
+  font-family: "Courier New", monospace;
+  background: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+/* Trích dẫn */
+.markdown blockquote {
+  border-left: 4px solid #ccc;
+  padding-left: 10px;
+  color: #666;
+  margin: 8px 0;
+  font-style: italic;
+}
+
+.markdown-table {
+  table-layout: fixed;
+}
+
+.markdown-table th,
+.markdown-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.markdown-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.markdown-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Chia chiều rộng cột theo phần trăm */
+.markdown-table th:nth-child(1),
+.markdown-table td:nth-child(1) {
+  width: 30%; /* Cột Stt */
+}
+
+.markdown-table th:nth-child(2),
+.markdown-table td:nth-child(2) {
+  width: 12%; /* Cột Chứng chỉ */
+}
+
+.markdown-table th:nth-child(3),
+.markdown-table td:nth-child(3) {
+  width: 15%; /* Cột Nội dung */
+}
+
+/* Các cột còn lại chia đều */
+.markdown-table th:nth-child(n + 4),
+.markdown-table td:nth-child(n + 4) {
+  width: 12%;
+}
+
+.markdown-table th:nth-child(2),
+.markdown-table td:nth-child(2) {
+  min-width: 150px;
+  max-width: 200px;
+}

@@ -107,11 +107,17 @@ export function ChatWindow(props: { conversationId: string }) {
     };
     marked.setOptions({ renderer });
     try {
-      const sendChat = await axios.post(`${apiBaseUrl}/chain_code`, {
+      const sendChat = await axios.post(`${apiBaseUrl}/function-calling`, {
         question: messageValue,
         chat_history: chatHistory,
       });
       const result = sendChat.data.status === 200 && sendChat.data.output.response;
+      accumulatedMessage = result;
+
+      const recommendations = result[0].recommendations || []; // các câu hỏi gợi ý
+      const sources = result[0].sources || []; // các câu hỏi gợi ý
+      console.log("recommendations", recommendations);
+      console.log("sources", sources);
 
       setMessages((prevMessages) => {
         let newMessages = [...prevMessages];
@@ -126,6 +132,7 @@ export function ChatWindow(props: { conversationId: string }) {
             runId: runId,
             sources: sources,
             role: "assistant",
+            recommendations: recommendations, // thêm vào đây
           });
         } else if (newMessages[messageIndex] !== undefined) {
           newMessages[messageIndex].content = result;
@@ -136,7 +143,7 @@ export function ChatWindow(props: { conversationId: string }) {
       });
       setChatHistory((prevChatHistory) => [
         ...prevChatHistory,
-        { human: messageValue, ai: JSON.stringify(accumulatedMessage) },
+        { human: messageValue, ai: JSON.stringify(accumulatedMessage[0]?.content) },
       ]);
       setIsLoading(false);
     } catch (e) {
@@ -179,7 +186,7 @@ export function ChatWindow(props: { conversationId: string }) {
           mb={1}
           color={"black"}
         >
-          Chatbot Tuyển Sinh PTIT
+          Chatbot Tuyển Sinh trường Đại học Ngoại thương (FTU)
         </Heading>
         {
           // messages.length > 0 ? (
@@ -196,9 +203,9 @@ export function ChatWindow(props: { conversationId: string }) {
               marginBottom={"20px"}
               textAlign={"center"}
             >
-              Hỗ trợ tư vấn, hỏi đáp thông tin tuyển sinh Học viện Công nghệ Bưu chính Viễn Thông{" "}
-              <Link href="https://www.facebook.com/ptittuyensinh" color={"red.200"}>
-                Trang tuyển sinh PTIT
+              Hỗ trợ tư vấn, hỏi đáp thông tin tuyển sinh trường Đại học Ngoại thương{" "}
+              <Link target="_blank" href="https://www.facebook.com/TuyensinhFTU" color={"#c0181a"} style={{ color: "#c0181a !important", textDecoration: "none", fontWeight: "bold" }}>
+                Trang tuyển sinh FTU
               </Link>
             </Heading>
           )}
@@ -242,6 +249,7 @@ export function ChatWindow(props: { conversationId: string }) {
                 aiEmoji="🦜"
                 isMostRecent={index === 0}
                 messageCompleted={!isLoading}
+                onRecommendationClick={(rec) => sendMessage(rec)} // callback gợi ý
               ></ChatMessageBubble>
             ))
         ) : (
@@ -249,14 +257,14 @@ export function ChatWindow(props: { conversationId: string }) {
         )}
       </div>
       <InputGroup size="md" alignItems={"center"}>
-        {messages?.length>0 && <Tooltip label={'Xóa đoạn chat'}>
+        {messages?.length > 0 && <Tooltip label={'Xóa đoạn chat'}>
           <IconButton aria-label={'Clear'}
-                      onClick={async () => {
-                        setMessages([])
-                      }}
-                      icon={<DeleteIcon/>}
-                      value="Clear"
-                      marginRight={5}/>
+            onClick={async () => {
+              setMessages([])
+            }}
+            icon={<DeleteIcon />}
+            value="Clear"
+            marginRight={5} />
         </Tooltip>}
 
         <AutoResizeTextarea
@@ -265,7 +273,7 @@ export function ChatWindow(props: { conversationId: string }) {
           marginRight={"56px"}
           placeholder="Nhập câu hỏi tại đây..."
           textColor={"black"}
-          borderColor={"rgb(58, 58, 61)"}
+          borderColor={"#c5c5c5"}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -281,6 +289,7 @@ export function ChatWindow(props: { conversationId: string }) {
           <IconButton
             colorScheme="red"
             rounded={"full"}
+            backgroundColor={"#c0181a"}
             aria-label="Send"
             icon={isLoading ? <Spinner /> : <ArrowUpIcon />}
             type="submit"

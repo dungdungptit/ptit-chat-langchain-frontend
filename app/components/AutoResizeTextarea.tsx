@@ -1,4 +1,4 @@
-import { Textarea, TextareaProps } from "@chakra-ui/react";
+import { Textarea, TextareaProps, border } from "@chakra-ui/react";
 import ResizeTextarea from "react-textarea-autosize";
 import React from "react";
 
@@ -25,6 +25,7 @@ export const AutoResizeTextarea = React.forwardRef<
     <Textarea
       minH="unset"
       overflow="auto"
+      id="text_area"
       w="100%"
       resize="none"
       ref={ref as React.RefObject<HTMLTextAreaElement>}
