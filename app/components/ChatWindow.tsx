@@ -107,11 +107,15 @@ export function ChatWindow(props: { conversationId: string }) {
     };
     marked.setOptions({ renderer });
     try {
-      const sendChat = await axios.post(`${apiBaseUrl}/chain_code`, {
+      const sendChat = await axios.post(`${apiBaseUrl}/api/chat/chatbot`, {
         question: messageValue,
         chat_history: chatHistory,
       });
       const result = sendChat.data.status === 200 && sendChat.data.output.response;
+      accumulatedMessage = result;
+
+      const recommendations = result[0].recommendations || []; // các câu hỏi gợi ý
+      console.log("recommendations", recommendations);
 
       setMessages((prevMessages) => {
         let newMessages = [...prevMessages];
@@ -126,6 +130,7 @@ export function ChatWindow(props: { conversationId: string }) {
             runId: runId,
             sources: sources,
             role: "assistant",
+            recommendations: recommendations, // thêm vào đây
           });
         } else if (newMessages[messageIndex] !== undefined) {
           newMessages[messageIndex].content = result;
@@ -136,7 +141,7 @@ export function ChatWindow(props: { conversationId: string }) {
       });
       setChatHistory((prevChatHistory) => [
         ...prevChatHistory,
-        { human: messageValue, ai: JSON.stringify(accumulatedMessage) },
+        { human: messageValue, ai: JSON.stringify(accumulatedMessage[0]?.content) },
       ]);
       setIsLoading(false);
     } catch (e) {
@@ -179,7 +184,7 @@ export function ChatWindow(props: { conversationId: string }) {
           mb={1}
           color={"black"}
         >
-          Chatbot Tuyển Sinh PTIT
+          Thái Bình Ami - Chatbot hỗ trợ hỏi đáp thủ tục hành chính, dịch vụ công tỉnh Thái Bình
         </Heading>
         {
           // messages.length > 0 ? (
@@ -196,9 +201,9 @@ export function ChatWindow(props: { conversationId: string }) {
               marginBottom={"20px"}
               textAlign={"center"}
             >
-              Hỗ trợ tư vấn, hỏi đáp thông tin tuyển sinh Học viện Công nghệ Bưu chính Viễn Thông{" "}
-              <Link href="https://www.facebook.com/ptittuyensinh" color={"red.200"}>
-                Trang tuyển sinh PTIT
+              {" "}
+              <Link target="_blank" href="https://dichvucong.thaibinh.gov.vn/?home=1" color={"#49A8FF"} style={{ color: "#49A8FF !important", textDecoration: "none", fontWeight: "bold" }}>
+                HỆ THỐNG THÔNG TIN GIẢI QUYẾT THỦ TỤC HÀNH CHÍNH TỈNH THÁI BÌNH
               </Link>
             </Heading>
           )}
@@ -242,6 +247,7 @@ export function ChatWindow(props: { conversationId: string }) {
                 aiEmoji="🦜"
                 isMostRecent={index === 0}
                 messageCompleted={!isLoading}
+                onRecommendationClick={(rec) => sendMessage(rec)} // callback gợi ý
               ></ChatMessageBubble>
             ))
         ) : (
@@ -249,23 +255,23 @@ export function ChatWindow(props: { conversationId: string }) {
         )}
       </div>
       <InputGroup size="md" alignItems={"center"}>
-        {messages?.length>0 && <Tooltip label={'Xóa đoạn chat'}>
+        {messages?.length > 0 && <Tooltip label={'Xóa đoạn chat'}>
           <IconButton aria-label={'Clear'}
-                      onClick={async () => {
-                        setMessages([])
-                      }}
-                      icon={<DeleteIcon/>}
-                      value="Clear"
-                      marginRight={5}/>
+            onClick={async () => {
+              setMessages([])
+            }}
+            icon={<DeleteIcon />}
+            value="Clear"
+            marginRight={5} />
         </Tooltip>}
 
         <AutoResizeTextarea
           value={input}
           maxRows={5}
           marginRight={"56px"}
-          placeholder="Nhập câu hỏi tại đây..."
+          placeholder="Xin hãy nhập câu hỏi..."
           textColor={"black"}
-          borderColor={"rgb(58, 58, 61)"}
+          borderColor={"#c5c5c5"}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -279,8 +285,9 @@ export function ChatWindow(props: { conversationId: string }) {
         />
         <InputRightElement h="full">
           <IconButton
-            colorScheme="red"
+            colorScheme="blue"
             rounded={"full"}
+            backgroundColor={"#49A8FF"}
             aria-label="Send"
             icon={isLoading ? <Spinner /> : <ArrowUpIcon />}
             type="submit"

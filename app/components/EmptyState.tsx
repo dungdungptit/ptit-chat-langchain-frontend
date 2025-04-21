@@ -18,8 +18,8 @@ export function EmptyState(props: { onChoice: (question: string) => any }) {
         <Card
           onMouseUp={handleClick}
           width={"48%"}
-          backgroundColor={"rgb(58, 58, 61)"}
-          _hover={{ backgroundColor: "rgb(78,78,81)" }}
+          backgroundColor={"#49A8FF"}
+          _hover={{ backgroundColor: "#49A8FF" }}
           cursor={"pointer"}
           justifyContent={"center"}
         >
@@ -28,10 +28,10 @@ export function EmptyState(props: { onChoice: (question: string) => any }) {
               fontSize="lg"
               fontWeight={"medium"}
               mb={1}
-              color={"gray.200"}
+              color={"white"}
               textAlign={"center"}
             >
-              Thông tin liên hệ và hỗ trợ
+              Thủ tục đăng ký khai sinh
             </Heading>
           </CardHeader>
         </Card>
@@ -39,8 +39,8 @@ export function EmptyState(props: { onChoice: (question: string) => any }) {
         <Card
           onMouseUp={handleClick}
           width={"48%"}
-          backgroundColor={"rgb(58, 58, 61)"}
-          _hover={{ backgroundColor: "rgb(78,78,81)" }}
+          backgroundColor={"#49A8FF"}
+          _hover={{ backgroundColor: "#49A8FF" }}
           cursor={"pointer"}
           justifyContent={"center"}
         >
@@ -49,10 +49,10 @@ export function EmptyState(props: { onChoice: (question: string) => any }) {
               fontSize="lg"
               fontWeight={"medium"}
               mb={1}
-              color={"gray.200"}
+              color={"white"}
               textAlign={"center"}
             >
-              Chỉ tiêu tuyển sinh 2024
+              Thủ tục đăng ký kết hôn
             </Heading>
           </CardHeader>
         </Card>
@@ -61,8 +61,8 @@ export function EmptyState(props: { onChoice: (question: string) => any }) {
         <Card
           onMouseUp={handleClick}
           width={"48%"}
-          backgroundColor={"rgb(58, 58, 61)"}
-          _hover={{ backgroundColor: "rgb(78,78,81)" }}
+          backgroundColor={"#49A8FF"}
+          _hover={{ backgroundColor: "#49A8FF" }}
           cursor={"pointer"}
           justifyContent={"center"}
         >
@@ -71,10 +71,10 @@ export function EmptyState(props: { onChoice: (question: string) => any }) {
               fontSize="lg"
               fontWeight={"medium"}
               mb={1}
-              color={"gray.200"}
+              color={"white"}
               textAlign={"center"}
             >
-              Các phương thức xét tuyển 2024
+              Cấp thẻ căn cước cho người dưới 14 tuổi
             </Heading>
           </CardHeader>
         </Card>
@@ -82,8 +82,8 @@ export function EmptyState(props: { onChoice: (question: string) => any }) {
         <Card
           onMouseUp={handleClick}
           width={"48%"}
-          backgroundColor={"rgb(58, 58, 61)"}
-          _hover={{ backgroundColor: "rgb(78,78,81)" }}
+          backgroundColor={"#49A8FF"}
+          _hover={{ backgroundColor: "#49A8FF" }}
           cursor={"pointer"}
           justifyContent={"center"}
         >
@@ -92,10 +92,10 @@ export function EmptyState(props: { onChoice: (question: string) => any }) {
               fontSize="lg"
               fontWeight={"medium"}
               mb={1}
-              color={"gray.200"}
+              color={"white"}
               textAlign={"center"}
             >
-              Các ngành tuyển sinh 2024
+              Thủ tục đăng ký khai tử
             </Heading>
           </CardHeader>
         </Card>

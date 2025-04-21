@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { emojisplosion } from "emojisplosion";
 import React, { useState, useRef } from "react";
-import * as DOMPurify from "dompurify";
+import DOMPurify from 'dompurify';
 import { Renderer, marked } from "marked";
 import { SourceBubble, Source } from "./SourceBubble";
 import FocusLock from "react-focus-lock"
@@ -41,7 +41,13 @@ import { AutoResizeTextarea } from "./AutoResizeTextarea";
 import { TypeAnimation } from "react-type-animation";
 import Typewriter from "@/app/utils/Typewriter";
 import axios from "axios";
-import { a } from "js-tiktoken/dist/core-c3ffd518";
+// import { a } from "js-tiktoken/dist/core-c3ffd518";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
+import "./styles.css"
 
 export type Message = {
   id: string;
@@ -53,6 +59,7 @@ export type Message = {
   name?: string;
   question?: string;
   function_call?: { name: string };
+  recommendations?: string[];
 };
 export type Feedback = {
   feedback_id: string;
@@ -107,6 +114,17 @@ const getMarkedRenderer = () => {
   return renderer;
 };
 
+function fixMarkdownMath(markdownText: string) {
+  // Thay thế \[ và \] bằng $$
+  markdownText = markdownText.replace(/\\\[/g, '$$');
+  markdownText = markdownText.replace(/\\\]/g, '$$');
+
+  // Sửa các lỗi cú pháp LaTeX khác (nếu có)
+  // ...
+
+  return markdownText;
+}
+
 const createAnswerElements = (
   content: any[],
   filteredSources: Source[],
@@ -125,15 +143,31 @@ const createAnswerElements = (
         /((http|https|ftp):\/\/[\w?=&.\/-;#~%-]+(?![\w\s?&.\/;#~%"=-]*>))/g;
       // Replace the RegExp content by HTML element
       const sanitizedText = item.content.replace(Rexp, "<a href='$1' target='_blank'>$1</a>");
-      return <span key={key} dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(
-            sanitizedText.trimEnd(),
-            {
-              ALLOWED_TAGS: ["a"],
-              ALLOWED_ATTR: ["href", "target"]
-            })
-        }}
-      ></span>;
+      return <div className="markdown"><ReactMarkdown
+        key={key}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
+        components={{
+          a: ({ node, ...props }) => (
+            <a {...props} target="_blank" rel="noopener noreferrer">
+              {props.children}
+            </a>
+          ),
+          table: ({ node, ...props }) => (
+            <table className="markdown-table" {...props} />
+          ),
+          th: ({ node, ...props }) => <th className="markdown-table th" {...props} />,
+          td: ({ node, ...props }) => <td className="markdown-table td" {...props} />,
+        }}>{fixMarkdownMath(item.content)}</ReactMarkdown></div>;
+      // <span key={key} dangerouslySetInnerHTML={{
+      //   __html: DOMPurify.sanitize(
+      //     sanitizedText.trimEnd(),
+      //     {
+      //       ALLOWED_TAGS: ["a"],
+      //       ALLOWED_ATTR: ["href", "target"]
+      //     })
+      // }}
+      // ></span>;
     }
   })
 };
@@ -144,8 +178,11 @@ export function ChatMessageBubble(props: {
   aiEmoji?: string;
   isMostRecent: boolean;
   messageCompleted: boolean;
+  onRecommendationClick: (recommendation: string) => void;
   // question: string;
 }) {
+  // console.log("ChatMessageBubble", props.message);
+
   const { role, content, runId, question } = props.message;
   const isUser = role === "user";
   const [isLoading, setIsLoading] = useState(false);
@@ -312,9 +349,10 @@ export function ChatMessageBubble(props: {
             Hủy
           </Button>
           <Button isLoading={isLoading} colorScheme='red' onClick={
-            async () => {
+            // async 
+            () => {
               setIsLoading(true);
-              await handleFeedBack();
+              // await handleFeedBack();
               onCancel();
               setFeedback(true);
               setIsLoading(false);
@@ -378,12 +416,15 @@ export function ChatMessageBubble(props: {
           {content}
         </Heading>
       ) : (
-        <Box className="whitespace-pre-wrap" color="black">
+        <Box
+          // className="whitespace-pre-wrap" 
+          color="black">
           {answerElements}
+
           {props.message.role !== "user" &&
             props.isMostRecent &&
             props.messageCompleted && (
-              <HStack style={{marginTop: '20px'}} spacing={3}>
+              <HStack style={{ marginTop: '20px' }} spacing={3}>
                 <Heading fontSize="md" fontWeight={"normal"} mb={1} color={"black"}>
                   Đánh giá câu trả lời
                 </Heading>
@@ -457,6 +498,26 @@ export function ChatMessageBubble(props: {
               </HStack>
             )
           }
+
+
+          {props.message.recommendations && props.message.recommendations.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {/* Break line for recommendations */}
+              <div className="w-full h-0 border-t border-gray-300 my-2" />
+              <Heading fontSize="md" fontWeight={"normal"} mb={1} color={"black"}>
+
+              </Heading>
+              {props.message.recommendations.map((rec: string, index: number) => (
+                <button
+                  key={index}
+                  className="bg-blue-100 hover:bg-blue-200 text-blue-800 text-sm font-medium py-1 px-3 rounded-lg transition"
+                  onClick={() => props.onRecommendationClick(rec)}
+                >
+                  {rec}
+                </button>
+              ))}
+            </div>
+          )}
         </Box>
       )}
 

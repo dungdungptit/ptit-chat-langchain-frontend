@@ -5,8 +5,8 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PTIT Chatbot Tuyển Sinh",
-  description: "PTIT Chatbot Tuyển Sinh",
+  title: "Thái Bình Ami",
+  description: "Thái Bình Ami",
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body style={{overflow: 'hidden'}} className={`${inter.className} h-full`}>
+      <body style={{ overflow: 'hidden' }} className={`${inter.className} h-full`}>
         <div
           className="flex flex-col h-full md:p-8"
           style={{ background: "#fff" }}
